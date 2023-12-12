@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 matches = { version = "0.1.10", features = [] }
 num = "0.4.1"
+log = "0.4.20"

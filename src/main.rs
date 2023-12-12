@@ -1,3 +1,4 @@
+use crate::aoc11::aoc11;
 use crate::aoc1::aoc1;
 use crate::aoc2::aoc2;
 use crate::aoc3::aoc3;
@@ -15,6 +16,7 @@ mod aoc6;
 mod aoc7;
 mod aoc8;
 mod aoc9;
+mod aoc11;
 fn main() {
-    println!("{}", aoc9().unwrap());
+    println!("{}", aoc11().unwrap());
 }
