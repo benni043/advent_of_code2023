@@ -38,10 +38,10 @@ pub fn aoc9() -> Option<i32> {
                     let num2 = *hist_vals_of_line
                         .get(x - 1)
                         .unwrap()
-                        .get(hist_vals_of_line.get(x - 1).unwrap().len() - 1)
+                        .get(0)
                         .unwrap();
 
-                    num = num + num2;
+                    num = num2 - num;
                 }
 
                 sum += num;
