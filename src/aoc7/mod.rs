@@ -1,7 +1,7 @@
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::fs;
 
-pub fn aoc7() -> Option<usize>{
+pub fn aoc7() -> Option<usize> {
     let result = fs::read_to_string("assets/aoc7/aoc7.txt");
 
     match result {
@@ -104,7 +104,6 @@ enum CardType {
     Ace,
     King,
     Queen,
-    Jack,
     Ten,
     Nine,
     Eight,
@@ -114,9 +113,10 @@ enum CardType {
     Four,
     Three,
     Two,
+    Jack,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Eq, Hash, PartialEq, Ord, PartialOrd, Copy, Clone)]
 struct Card {
     card_type: CardType,
 }
@@ -128,10 +128,40 @@ struct Hand {
 }
 
 impl Hand {
+    fn find_most_common_card_type(cards: &Vec<Card>) -> Option<CardType> {
+        let mut card_type_frequency = BTreeMap::new();
+
+        for card in cards {
+            *card_type_frequency.entry(card.card_type).or_insert(0) += 1;
+        }
+
+        let mut sorted_vals = Vec::from_iter(&card_type_frequency);
+        sorted_vals.sort_by(|&(_, a), &(_, b)| b.cmp(&a));
+
+        for x in sorted_vals {
+            if x.0 != &CardType::Jack {
+                return Some(*x.0);
+            }
+        }
+
+        None
+    }
+
     fn get_hand_type(&self) -> HandType {
         let mut card_counts: HashMap<CardType, usize> = HashMap::new();
 
-        for card in &self.cards {
+        let mut cards: Vec<Card> = self.cards.iter().cloned().collect();
+
+        let card_type =
+            Hand::find_most_common_card_type(&self.cards).unwrap_or(CardType::Ace);
+
+        for card in &mut cards {
+            if card.card_type == CardType::Jack {
+                card.card_type = card_type;
+            }
+        }
+
+        for card in &cards {
             card_counts.insert(
                 card.card_type,
                 card_counts.get(&card.card_type).unwrap_or(&0) + 1,
@@ -144,9 +174,9 @@ impl Hand {
         match (unique_numbers, max_count) {
             (1, 5) => HandType::FiveOfAKind,
             (_, 4) => HandType::FourOfAKind,
-            (_, 3) if unique_numbers == 2 => HandType::FullHouse,
+            (2, 3) => HandType::FullHouse,
             (_, 3) => HandType::ThreeOfAKind,
-            (_, 2) if unique_numbers == 3 => HandType::TwoPair,
+            (3, 2) => HandType::TwoPair,
             (_, 2) => HandType::OnePair,
             _ => HandType::HighCard,
         }
