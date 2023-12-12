@@ -1,6 +1,12 @@
 use std::fs;
 
 pub fn aoc2() -> Option<usize> {
+    let common_game = Game {
+        red: 12,
+        green: 13,
+        blue: 14,
+    };
+
     let result = fs::read_to_string("assets/aoc2/aoc2.txt");
     let mut sum_id = 0;
 
@@ -54,9 +60,12 @@ pub fn aoc2() -> Option<usize> {
                     }
                 }
 
-                let multiplied = current_game.red * current_game.blue * current_game.green;
-
-                sum_id += multiplied;
+                if current_game.red <= common_game.red
+                    && current_game.blue <= common_game.blue
+                    && current_game.green <= common_game.green
+                {
+                    sum_id += id;
+                }
 
                 current_game.red = 0;
                 current_game.blue = 0;
