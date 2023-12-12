@@ -3,7 +3,6 @@ use std::fs;
 
 pub fn aoc3() -> Option<usize> {
     let result = fs::read_to_string("assets/aoc3/aoc3.txt");
-    let mut sum = 0;
 
     let mut symbols: Vec<Symbol> = vec![];
     let mut numbers: Vec<Number> = vec![];
@@ -125,37 +124,40 @@ pub fn aoc3() -> Option<usize> {
                         symbols.push(Symbol {
                             x_index: char.0 as i32,
                             y_index: line.0 as i32,
-                            form: char.0.to_string()
+                            form: char.1.to_string(),
+                            numbers: vec![],
                         });
                     }
                 }
             }
 
-            for x in &mut numbers {
-                if has_symbol_neighbor(x, &symbols) {
-                    sum += x.number;
+            for x in &mut symbols {
+                if x.form == '*'.to_string() {
+                    'outer: for number in &numbers {
+                        for cord in &number.possible_symbol_cords {
+                            if cord.x == x.x_index && cord.y == x.y_index {
+                                x.numbers.push(number.number as i32);
+                                continue 'outer;
+                            }
+                        }
+                    }
                 }
             }
 
-            Some(sum)
+            let mut temp = 0;
+            for x in &symbols {
+                if x.numbers.len() == 2 {
+                    temp += x.numbers[0] * x.numbers[1];
+                }
+            }
+
+            Some(temp as usize)
         }
         Err(err) => {
             println!("{}", err);
             None
         }
     }
-}
-
-fn has_symbol_neighbor(number: &mut Number, symbols: &Vec<Symbol>) -> bool {
-    for x in &number.possible_symbol_cords {
-        for y in symbols {
-            if x.x == y.x_index && x.y == y.y_index {
-                return true;
-            }
-        }
-    }
-
-    false
 }
 
 #[derive(Debug)]
@@ -177,5 +179,6 @@ struct Number {
 struct Symbol {
     x_index: i32,
     y_index: i32,
-    form: String
+    form: String,
+    numbers: Vec<i32>,
 }
