@@ -48,7 +48,7 @@ pub fn aoc11() -> Option<i32> {
             for (index, row) in grid.iter().enumerate() {
                 for (index2, cell) in row.iter().enumerate() {
                     if cell == &'#' {
-                        cords.push((Cord { x: index, y: index2 }));
+                        cords.push((Cord { x: index2, y: index }));
                     }
                 }
             }
@@ -64,10 +64,25 @@ pub fn aoc11() -> Option<i32> {
                 }
             }
 
-            println!("{:?}", connections.len());
+            // println!("{:?}", connections.len());
 
-            for connection in connections {
-                // println!("{:?}", shortest_path_length(connection.0, connection.1, &grid));
+            let mut sum = 0;
+            for (from, to) in connections {
+                println!("{}", to.y);
+                println!("{}", from.y);
+                let part1 = (to.y - from.y) * 2;
+                println!("{}", part1);
+                println!();
+
+
+                let mut part2 = 0;
+                if from.x > to.x {
+                    part2 = from.x - (to.y - from.y);
+                } else {
+                    part2 = to.x - (to.y - from.y);
+                }
+
+                println!("sum: {}", part1 + part2);
             }
 
             Some(1)
@@ -78,45 +93,6 @@ pub fn aoc11() -> Option<i32> {
         }
     }
 }
-
-// fn get_neighbors(cord: Cord, grid: &Vec<Vec<char>>) -> Vec<Cord> {
-//     let mut neighbors = Vec::new();
-//     let directions: [(i32, i32); 4] = [(0, 1), (0, -1), (1, 0), (-1, 0)]; // Right, Left, Down, Up
-//     for &(dx, dy) in directions.iter() {
-//         let nx = cord.x + dx;
-//         let ny = cord.y + dy;
-//         if nx >= 0 && ny >= 0 && nx < grid.len() && ny < grid[0].len()
-//             && grid[nx as usize][ny as usize] != '.'
-//         {
-//             neighbors.push(Cord {
-//                 x: nx,
-//                 y: ny,
-//             });
-//         }
-//     }
-//     neighbors
-// }
-//
-// fn shortest_path_length(start: Cord, end: Cord, grid: &Vec<Vec<char>>) -> Option<usize> {
-//     let mut queue: VecDeque<(Cord, usize)> = VecDeque::new();
-//     let mut visited: Vec<Vec<bool>> = vec![vec![false; grid[0].len()]; grid.len()];
-//
-//     queue.push_back((start, 0));
-//     visited[&start.x][&start.y] = true;
-//
-//     while let Some((Cord, dist)) = queue.pop_front() {
-//         if Cord.x == end.x && Cord.y == end.y {
-//             return Some(dist); // Return the length of the shortest path
-//         }
-//         for neighbor in get_neighbors(Cord, grid) {
-//             if !visited[neighbor.x][neighbor.y] {
-//                 visited[neighbor.x][neighbor.y] = true;
-//                 queue.push_back((neighbor, dist + 1));
-//             }
-//         }
-//     }
-//     None // No path found
-// }
 
 #[derive(Eq, Hash, PartialEq, Debug, Clone)]
 struct Cord {
