@@ -1,7 +1,7 @@
 use std::collections::{HashSet, VecDeque};
 use std::fs;
 
-pub fn aoc11() -> Option<i32> {
+pub fn aoc11() -> Option<usize> {
     let result = fs::read_to_string("assets/aoc11/aoc11.txt");
 
     match result {
@@ -68,24 +68,24 @@ pub fn aoc11() -> Option<i32> {
 
             let mut sum = 0;
             for (from, to) in connections {
-                println!("{}", to.y);
-                println!("{}", from.y);
-                let part1 = (to.y - from.y) * 2;
-                println!("{}", part1);
-                println!();
-
-
-                let mut part2 = 0;
+                let mut part1 = 0;
                 if from.x > to.x {
-                    part2 = from.x - (to.y - from.y);
+                    part1 = from.x - to.x;
                 } else {
-                    part2 = to.x - (to.y - from.y);
+                    part1 = to.x - from.x;
                 }
 
-                println!("sum: {}", part1 + part2);
+                let mut part2 = 0;
+                if from.y > to.y {
+                    part2 = from.y - to.y;
+                } else {
+                    part2 = to.y - from.y;
+                }
+
+                sum += part1 + part2;
             }
 
-            Some(1)
+            Some(sum)
         }
         Err(err) => {
             println!("{}", err);
